@@ -1,0 +1,52 @@
+spring:
+  application:
+    name: agent-demo
+
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/agent-demo?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: root
+    password: fanweihao123
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 20             # 连接池最大连接数
+      minimum-idle: 5                   # 最小空闲连接
+      idle-timeout: 600000              # 10 分钟：空闲多久回收
+      max-lifetime: 1700000             # 约 28 分钟
+      keepalive-time: 300000            # 5 分钟发一次“保活”
+      connection-timeout: 30000
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      database: 2
+
+server:
+  port: 8081
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl # 打印 SQL 日志
+  global-config:
+    db-config:
+      id-type: auto
+  mapper-locations: classpath*:/mapper/*.xml
+jwt:
+  issuer: agent-demo
+  privateKey: classpath:keys/private.pem
+  publicKey: classpath:keys/public.pem
+  keyId: "agent-demo"
+
+langchain4j:
+  community:
+    dashscope:
+      api-key: sk-d45d50ceb17c473eb8a49c6be284cafc
+      model-name: qwen-max
+# 属性与 `QwenChatModel` 相同
+# 例如
+# langchain4j.community.dashscope.temperature=0.7
+# langchain4j.community.dashscope.max-tokens=4096
+    
+
+
