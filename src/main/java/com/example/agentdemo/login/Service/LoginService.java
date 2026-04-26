@@ -19,4 +19,10 @@ public interface LoginService {
      * @param registerDto
      */
     void register(RegisterDto registerDto);
+
+    /**
+     * 登出用户
+     * @param userId
+     */
+    void logout(long userId);
 }

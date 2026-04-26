@@ -1,23 +1,20 @@
 <template>
   <div id="app">
     <!-- 根据登录状态显示不同页面 -->
-    <Login v-if="!isLoggedIn" @login-success="handleLoginSuccess" />
+    <Login v-if="!isLoggedIn"/>
     <MainIndex v-else />
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
 import Login from './components/Login.vue'
 import MainIndex from './components/MainIndex.vue'
+import {computed, ref} from "vue";
+import {useUserStore} from "./api/User.js";
 
+const userStore = useUserStore();
 
-const isLoggedIn = ref(false)
-
-// 处理登录成功
-const handleLoginSuccess = () => {
-  isLoggedIn.value = true
-}
+const isLoggedIn = computed(() => userStore.isLoggedIn)
 
 </script>
 

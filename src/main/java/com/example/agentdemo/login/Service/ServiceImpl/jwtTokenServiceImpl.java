@@ -100,6 +100,11 @@ public class jwtTokenServiceImpl implements jwtTokenService {
         throw new RuntimeException("用户id格式不正确");
     }
 
+    @Override
+    public void revokeAll(long userId) {
+        redisStore.revokeAll(userId);
+    }
+
     /**
      * 将token存入redis中
      * @param tokenPair

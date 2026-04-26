@@ -66,6 +66,12 @@ public class LoginServiceImpl implements LoginService {
         userMapper.insert(user);
     }
 
+    @Override
+    public void logout(long userId) {
+        //只需要将redis中关于该用户的token删除就行了
+        jwtTokenService.revokeAll(userId);
+    }
+
     private LoginVo mapIntoLoginVo(TokenPair tokenPair, User user) {
         UserResponse userResponse = new UserResponse(
                 user.getId(),

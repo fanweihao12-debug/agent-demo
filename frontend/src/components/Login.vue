@@ -66,9 +66,9 @@
 <script setup>
 import { ref, reactive } from 'vue';
 import { ElMessage } from 'element-plus';
-import {login,register} from "../api/User.js";
+import { useUserStore } from '../api/User.js';
 
-
+const userstore = useUserStore();
 
 const isRegister = ref(false);
 const loading = ref(false);
@@ -86,23 +86,23 @@ const handleLogin = async () => {
   if (!loginForm.name || !loginForm.passWord) return ElMessage.warning('请填写完整信息');
   loading.value = true;
   try {
-    const res = await login(loginForm);
-    const { code, msg, data } = res.data;
-
-    if (code === 1) {
-      localStorage.setItem('accesstoken',data.tokenResponse.accessToken);
+    const res = await userstore.login(loginForm);
+    if (res.success) {
+      ElMessage.success('登录成功');
       emit('login-success');
-      ElMessage.success('登录成功！');
+    } else {
+      ElMessage.error(res.message || '登录失败');
     }
-    else ElMessage.error(msg || '登录失败');
-  } catch (err) { ElMessage.error('网络错误'); } finally { loading.value = false; }
+  } finally {
+    loading.value = false;
+  }
 };
 
 const handleRegister = async () => {
   if (!registerForm.name || !registerForm.passWord) return ElMessage.warning('用户名和密码不能为空');
   loading.value = true;
   try {
-    const res = await register(registerForm);
+    const res = await userstore.register(registerForm);
     const { code, msg, data } = res.data;
     if (code=== 1) { ElMessage.success('注册成功'); isRegister.value = false; }
     else ElMessage.error(msg || '注册失败');

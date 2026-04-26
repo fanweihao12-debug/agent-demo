@@ -7,10 +7,7 @@ import com.example.agentdemo.login.common.Dto.RegisterDto;
 import com.example.agentdemo.login.common.Vo.LoginVo;
 import com.example.agentdemo.login.common.Vo.RegisterVo;
 import jakarta.annotation.Resource;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/user")
@@ -28,6 +25,12 @@ public class LoginController {
     @PostMapping("/register")
     public Result register(@RequestBody RegisterDto registerDto){
         loginService.register(registerDto);
+        return Result.success();
+    }
+
+    @PostMapping("/logout/{userId}")
+    public Result logout(@PathVariable long userId){
+        loginService.logout(userId);
         return Result.success();
     }
 

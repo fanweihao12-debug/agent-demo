@@ -54,6 +54,8 @@ public class RedisStoreRefreshToken implements StoreRefreshTokenService {
             return;
         }
         redisTemplate.delete(keys);
+        key = "User:refreshToken:"+userId;
+        redisTemplate.delete(key);
     }
 
     @Override
@@ -65,7 +67,7 @@ public class RedisStoreRefreshToken implements StoreRefreshTokenService {
     @Override
     public String getRefreshToken(Long userId) {
         String key = "User:refreshToken:"+userId;
-        return redisTemplate.opsForValue().get(userId);
+        return redisTemplate.opsForValue().get(key);
     }
 
     @Override

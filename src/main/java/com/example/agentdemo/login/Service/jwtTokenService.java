@@ -26,4 +26,10 @@ public interface jwtTokenService {
      * @return
      */
     long getUserID(String accesstoken);
+
+    /**
+     * 登出时将用户所有的token全部删掉
+     * @param userId
+     */
+    void revokeAll(long userId);
 }

@@ -1,8 +1,33 @@
 <template>
   <div class="container">
     <div class="brand-bar">
+
       <div class="logo">GLOBE<span>｜好物集</span></div>
       <div class="tagline">EDITOR'S PICK · 今日全球灵感</div>
+    </div>
+
+    <div class="user-section" v-if="isLoggedIn">
+      <div class="user-avatar" @click="toggleUserMenu">
+        <img :src="userAvatar" alt="用户头像" />
+        <span class="username">{{ username }}</span>
+        <i class="arrow" :class="{ up: showUserMenu }">▼</i>
+      </div>
+
+      <!-- 下拉菜单 -->
+      <div class="user-menu" v-if="showUserMenu" @click.stop>
+        <div class="menu-item" @click="goToUserCenter">
+          <span>👤</span> 个人中心
+        </div>
+        <div class="menu-divider"></div>
+        <div class="menu-item logout-item" @click="handleLogout">
+          <span>🚪</span> 退出登录
+        </div>
+      </div>
+    </div>
+
+    <!-- 未登录状态显示登录按钮 -->
+    <div class="user-section" v-else>
+      <button class="login-btn" @click="goToLogin">登录</button>
     </div>
 
     <!-- 上部分：定时滑动窗口 -->
@@ -58,13 +83,20 @@
 </template>
 
 <script>
+import { useUserStore } from '../api/User.js'
+
 export default {
-  name: 'GlobalGoods',
+  name: 'MainIndex',
+  setup() {
+    const userStore = useUserStore()
+    return { userStore }
+  },
   data() {
     return {
       currentIndex: 0,
       intervalId: null,
       slideInterval: 2000,
+      showUserMenu: false,
       // 商品数据 + 图片地址
       products: [
         {
@@ -120,16 +152,42 @@ export default {
       ]
     }
   },
+  computed: {
+    isLoggedIn() {
+      return this.userStore.isLoggedIn
+    },
+    username() {
+      return this.userStore.displayName
+    },
+    userAvatar() {
+      const initial = (this.username || 'U').trim().slice(0, 1).toUpperCase()
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96"><rect width="96" height="96" rx="48" fill="#4f46e5"/><text x="50%" y="54%" text-anchor="middle" dominant-baseline="middle" fill="#fff" font-size="42" font-family="Arial, sans-serif" font-weight="700">${initial}</text></svg>`
+      return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`
+    }
+  },
   mounted() {
     this.startAutoSlide()
     // 窗口resize时修正轮播位置
     window.addEventListener('resize', this.handleResize)
   },
-  beforeDestroy() {
+  beforeUnmount() {
     this.stopAutoSlide()
     window.removeEventListener('resize', this.handleResize)
   },
   methods: {
+    toggleUserMenu() {
+      this.showUserMenu = !this.showUserMenu
+    },
+    goToUserCenter() {
+      this.showUserMenu = false
+    },
+    async handleLogout() {
+      await this.userStore.logout()
+      this.showUserMenu = false
+    },
+    goToLogin() {
+      this.userStore.clearUserInfo()
+    },
     goToSlide(index) {
       this.currentIndex = index
     },
