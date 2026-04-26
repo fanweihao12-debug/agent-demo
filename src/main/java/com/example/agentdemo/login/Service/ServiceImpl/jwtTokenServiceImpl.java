@@ -1,5 +1,6 @@
 package com.example.agentdemo.login.Service.ServiceImpl;
 
+import com.example.agentdemo.Utils.UserContext;
 import com.example.agentdemo.common.Entity.User;
 import com.example.agentdemo.login.Config.jwtProperties;
 import com.example.agentdemo.login.Service.StoreRefreshTokenService;
@@ -8,6 +9,7 @@ import com.example.agentdemo.login.common.TokenPair;
 import jakarta.annotation.Resource;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -54,6 +56,50 @@ public class jwtTokenServiceImpl implements jwtTokenService {
         return tokenPair;
     }
 
+    @Override
+    public boolean isVaild(String accesstoken) {
+        Long userId = UserContext.getUserId();
+        String refreshtoken =  redisStore.getRefreshToken(userId);
+        boolean isVaild = redisStore.isTokenValid(userId, accesstoken);
+        if(isVaild){
+            refreshToken(userId,accesstoken,refreshtoken);
+            return true;
+        }
+
+        if(!StringUtils.hasText(refreshtoken)){
+            return false;
+        }
+
+        isVaild = redisStore.isTokenValid(userId,refreshtoken);
+        if(!isVaild){
+            return false;
+        }
+
+        refreshToken(userId,accesstoken,refreshtoken);
+        return true;
+
+    }
+
+    private void refreshToken(Long userId, String accesstoken, String refreshtoken) {
+        redisStore.refreshToken(userId,accesstoken,"access");
+        redisStore.refreshToken(userId,refreshtoken,"refresh");
+    }
+
+    @Override
+    public long getUserID(String accesstoken) {
+        Jwt jwt = jwtDecoder.decode(accesstoken);
+        Object userId = jwt.getClaim("userId");
+        if(userId instanceof Number number){
+            return number.longValue();
+        }
+
+        if(userId instanceof String text){
+            return Long.parseLong(text);
+        }
+
+        throw new RuntimeException("用户id格式不正确");
+    }
+
     /**
      * 将token存入redis中
      * @param tokenPair
@@ -64,7 +110,10 @@ public class jwtTokenServiceImpl implements jwtTokenService {
 
         redisStore.storeToken(userId,tokenPair.getRefreshTokenId(),refreshTtl);
         redisStore.storeToken(userId,tokenPair.getAccessTokenId(),accessTtl);
+        redisStore.storeUserAndToken(userId,tokenPair.getRefreshToken(),refreshTtl);
     }
+
+
 
 
     /**
@@ -86,6 +135,7 @@ public class jwtTokenServiceImpl implements jwtTokenService {
                 .id(tokenId)
                 .claim("token_type", tokenType)
                 .claim("name", user.getName())
+                .claim("userId",user.getId())
                 .build();
         return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
     }
