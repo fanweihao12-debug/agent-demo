@@ -59,7 +59,7 @@ public class RedisStoreRefreshToken implements StoreRefreshTokenService {
     @Override
     public void storeUserAndToken(long userId, String refreshToken, Duration refreshTtl) {
         String key = "User:refreshToken:"+userId;
-        redisTemplate.opsForValue().set(key,refreshToken);
+        redisTemplate.opsForValue().set(key,refreshToken,refreshTtl);
     }
 
     @Override
