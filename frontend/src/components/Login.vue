@@ -66,14 +66,14 @@
 <script setup>
 import { ref, reactive } from 'vue';
 import { ElMessage } from 'element-plus';
-import axios from 'axios';
+import {login,register} from "../api/User.js";
 
 
 
-
-const api = axios.create({ baseURL: '/api/user' });
 const isRegister = ref(false);
 const loading = ref(false);
+
+const emit = defineEmits(['login-success'])
 
 const loginForm = reactive({ name: '', passWord: '' });
 const registerForm = reactive({ name: '', passWord: '', phoneNumber: '', age: null });
@@ -86,9 +86,14 @@ const handleLogin = async () => {
   if (!loginForm.name || !loginForm.passWord) return ElMessage.warning('请填写完整信息');
   loading.value = true;
   try {
-    const res = await api.post('/login', loginForm);
+    const res = await login(loginForm);
     const { code, msg, data } = res.data;
-    if (code === 1) ElMessage.success('登录成功！');
+
+    if (code === 1) {
+      localStorage.setItem('accesstoken',data.tokenResponse.accessToken);
+      emit('login-success');
+      ElMessage.success('登录成功！');
+    }
     else ElMessage.error(msg || '登录失败');
   } catch (err) { ElMessage.error('网络错误'); } finally { loading.value = false; }
 };
@@ -97,7 +102,7 @@ const handleRegister = async () => {
   if (!registerForm.name || !registerForm.passWord) return ElMessage.warning('用户名和密码不能为空');
   loading.value = true;
   try {
-    const res = await api.post('/register', registerForm);
+    const res = await register(registerForm);
     const { code, msg, data } = res.data;
     if (code=== 1) { ElMessage.success('注册成功'); isRegister.value = false; }
     else ElMessage.error(msg || '注册失败');
