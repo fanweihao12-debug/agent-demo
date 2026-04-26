@@ -1,6 +1,6 @@
 package com.example.agentdemo.login.Service.ServiceImpl;
 
-import ch.qos.logback.core.joran.util.beans.BeanUtil;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.agentdemo.Mapper.UserMapper;
 import com.example.agentdemo.common.Entity.User;
@@ -70,7 +70,6 @@ public class LoginServiceImpl implements LoginService {
         UserResponse userResponse = new UserResponse(
                 user.getId(),
                 user.getName(),
-                user.getPassWord(),
                 user.getAge(),
                 user.getPhoneNumber()
         );

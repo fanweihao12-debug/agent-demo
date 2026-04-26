@@ -97,7 +97,7 @@ const handleRegister = async () => {
   if (!registerForm.name || !registerForm.passWord) return ElMessage.warning('用户名和密码不能为空');
   loading.value = true;
   try {
-    const res = await api.post('/login', loginForm);
+    const res = await api.post('/register', registerForm);
     const { code, msg, data } = res.data;
     if (code=== 1) { ElMessage.success('注册成功'); isRegister.value = false; }
     else ElMessage.error(msg || '注册失败');
