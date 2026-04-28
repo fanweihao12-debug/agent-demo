@@ -22,7 +22,7 @@ export async function uploadImage(file) {
     formData.append('file', file)
 
     try {
-        const res = await api.post('/upload/image', formData)
+        const res = await api.post('/common/image', formData)
 
         const { code, msg, data } = res.data
 

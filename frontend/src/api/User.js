@@ -10,7 +10,9 @@ export const useUserStore = defineStore('user', {
             id: null,
             name: '',
             age: null,
-            phoneNumber: ''
+            phoneNumber: '',
+            email:'',
+            imageUrl:''
         },
         // 登录状态
         isLoggedIn: false,
@@ -43,7 +45,7 @@ export const useUserStore = defineStore('user', {
         async login(loginData) {
             try {
                 // 假设你的登录接口返回用户信息
-                const response = await api.post('/login', loginData);
+                const response = await api.post('/user/login', loginData);
                 const { code, msg, data } = response.data;
 
                 if (code === 1) {
@@ -52,7 +54,9 @@ export const useUserStore = defineStore('user', {
                         id: data.userResponse.id,
                         name: data.userResponse.name,
                         age: data.userResponse.age,
-                        phoneNumber: data.userResponse.phoneNumber
+                        phoneNumber: data.userResponse.phoneNumber,
+                        email:data.userResponse.email,
+                        imageUrl:data.userResponse.imageUrl
                     };
                     this.isLoggedIn = true;
                     this.token = data.tokenResponse?.accessToken || null;
@@ -72,7 +76,7 @@ export const useUserStore = defineStore('user', {
         // 注册方法
         async register(registerData) {
             try {
-                const response = await api.post('/register', registerData);
+                const response = await api.post('/user/register', registerData);
                 return response;
             } catch (error) {
                 console.error('注册失败:', error);
@@ -102,7 +106,9 @@ export const useUserStore = defineStore('user', {
                 id: null,
                 name: '',
                 age: null,
-                phoneNumber: ''
+                phoneNumber: '',
+                email:'',
+                imageUrl:''
             };
             this.isLoggedIn = false;
             this.token = null;

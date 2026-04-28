@@ -134,7 +134,7 @@ const handleRegister = async () => {
 
 const handleImageChange =async (options) => {
 
-  const imageUrl = uploadImage(options.file)
+  const imageUrl = await uploadImage(options.file)
 
   if (!imageUrl) {
     options.onError?.()

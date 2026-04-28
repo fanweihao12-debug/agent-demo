@@ -8,7 +8,7 @@
 
     <div class="user-section" v-if="isLoggedIn">
       <div class="user-avatar" @click="toggleUserMenu">
-        <img :src="userAvatar" alt="用户头像" />
+        <img :src="userAvatar" alt="用户头像" class="avatar-img" />
         <span class="username">{{ username }}</span>
         <i class="arrow" :class="{ up: showUserMenu }">▼</i>
       </div>
@@ -160,6 +160,9 @@ export default {
       return this.userStore.displayName
     },
     userAvatar() {
+      if(this.userStore.userResponse.imageUrl){
+        return this.userStore.userResponse.imageUrl
+      }
       const initial = (this.username || 'U').trim().slice(0, 1).toUpperCase()
       const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96"><rect width="96" height="96" rx="48" fill="#4f46e5"/><text x="50%" y="54%" text-anchor="middle" dominant-baseline="middle" fill="#fff" font-size="42" font-family="Arial, sans-serif" font-weight="700">${initial}</text></svg>`
       return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`
@@ -232,6 +235,15 @@ body {
   max-width: 1440px;
   margin: 0 auto;
   padding: 2rem 2rem 4rem;
+}
+
+.avatar-img {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  flex-shrink: 0;
 }
 
 .brand-bar {

@@ -20,7 +20,7 @@ public class TemporarySecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/user/register", "/user/login").permitAll()
-                        .requestMatchers("/user/logout/**").permitAll()
+                        .requestMatchers("/user/logout/**","/common/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .csrf(csrf->csrf.disable());

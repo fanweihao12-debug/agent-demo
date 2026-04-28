@@ -4,6 +4,8 @@ public record UserResponse(
          Long id,
          String name,
          Integer age,
-         String phoneNumber
+         String phoneNumber,
+         String email,
+         String imageUrl
 ) {
 }

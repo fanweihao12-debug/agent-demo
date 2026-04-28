@@ -77,7 +77,9 @@ public class LoginServiceImpl implements LoginService {
                 user.getId(),
                 user.getName(),
                 user.getAge(),
-                user.getPhoneNumber()
+                user.getPhoneNumber(),
+                user.getEmail(),
+                user.getImage()
         );
 
         TokenResponse tokenResponse = new TokenResponse(

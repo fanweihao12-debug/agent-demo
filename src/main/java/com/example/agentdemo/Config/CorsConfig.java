@@ -22,7 +22,8 @@ public class CorsConfig implements WebMvcConfigurer {
                 // 放行登录、注册接口
                 .excludePathPatterns(
                         "/user/login",
-                        "/user/register"
+                        "/user/register",
+                        "/common/**"
                 );
     }
 
