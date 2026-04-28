@@ -38,11 +38,6 @@ jwt:
   publicKey: classpath:keys/public.pem
   keyId: "agent-demo"
 
-langchain4j:
-  community:
-    dashscope:
-      api-key: sk-d45d50ceb17c473eb8a49c6be284cafc
-      model-name: qwen-max
 # 属性与 `QwenChatModel` 相同
 # 例如
 # langchain4j.community.dashscope.temperature=0.7
