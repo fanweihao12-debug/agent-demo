@@ -14,4 +14,6 @@ public class User {
     private String passWord;
     private Integer age;
     private String phoneNumber;
+    private String email;
+    private String image;
 }

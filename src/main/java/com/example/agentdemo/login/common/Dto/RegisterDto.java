@@ -1,5 +1,6 @@
 package com.example.agentdemo.login.common.Dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
 
@@ -12,4 +13,7 @@ public class RegisterDto implements Serializable {
     public String passWord;
     public String phoneNumber;
     public Integer age;
+    public String email;
+    @JsonProperty("imageUrl")
+    public String image;
 }

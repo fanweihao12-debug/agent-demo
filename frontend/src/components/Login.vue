@@ -36,6 +36,27 @@
               <el-form-item label="年龄 (选填)">
                 <el-input v-model.number="registerForm.age" type="number" placeholder="请输入年龄" prefix-icon="TrendCharts" />
               </el-form-item>
+              <el-form-item label="邮箱">
+                <el-input v-model="registerForm.email" placeholder="请输入邮箱" prefix-icon="Message" />
+              </el-form-item>
+              <el-form-item label="头像 (选填)">
+                <el-upload
+                    class="image-uploader"
+                    action="#"
+                    :show-file-list="false"
+                    :http-request="handleImageChange"
+                    accept="image/*"
+                >
+                  <img
+                      v-if="registerForm.imageUrl"
+                      :src="registerForm.imageUrl"
+                      class="image"
+                  />
+                  <el-icon v-else class="image-uploader-icon">
+                    <Plus />
+                  </el-icon>
+                </el-upload>
+              </el-form-item>
             </template>
 
             <el-form-item label="密码">
@@ -67,6 +88,8 @@
 import { ref, reactive } from 'vue';
 import { ElMessage } from 'element-plus';
 import { useUserStore } from '../api/User.js';
+import {uploadImage} from "../api/imageUpload.js";
+import {ArrowLeft, Plus} from "@element-plus/icons-vue";
 
 const userstore = useUserStore();
 
@@ -76,7 +99,7 @@ const loading = ref(false);
 const emit = defineEmits(['login-success'])
 
 const loginForm = reactive({ name: '', passWord: '' });
-const registerForm = reactive({ name: '', passWord: '', phoneNumber: '', age: null });
+const registerForm = reactive({ name: '', passWord: '', phoneNumber: '', age: null,email:'',imageUrl:'' });
 
 const toggleMode = () => {
   isRegister.value = !isRegister.value;
@@ -108,9 +131,59 @@ const handleRegister = async () => {
     else ElMessage.error(msg || '注册失败');
   } catch (err) { ElMessage.error('接口异常'); } finally { loading.value = false; }
 };
+
+const handleImageChange =async (options) => {
+
+  const imageUrl = uploadImage(options.file)
+
+  if (!imageUrl) {
+    options.onError?.()
+    return
+  }
+
+  registerForm.imageUrl = imageUrl
+
+  options.onSuccess?.(imageUrl)
+}
+
 </script>
 
 <style scoped>
+
+.image-uploader {
+  width: 100px;
+  height: 100px;
+}
+
+.image-uploader .el-upload {
+  width: 100px;
+  height: 100px;
+  border: 1px dashed #d9d9d9;
+  border-radius: 8px;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.image-uploader .el-upload:hover {
+  border-color: #409eff;
+}
+
+.image {
+  width: 100px;
+  height: 100px;
+  display: block;
+  object-fit: cover;
+}
+
+.image-uploader-icon {
+  width: 100px;
+  height: 100px;
+  font-size: 28px;
+  color: #8c939d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 /* 核心布局 */
 .page-wrapper {
   height: 100vh;
@@ -172,8 +245,8 @@ const handleRegister = async () => {
 
 /* 卡片主样式 */
 .main-card {
-  width: 950px;
-  height: 620px;
+  width: 1250px;
+  height: 920px;
   display: flex;
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
